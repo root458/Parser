@@ -3,7 +3,7 @@ from yacc import yacc
 
 # Tokens
 tokens = ('PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
-          'VARIABLE', 'ENDL', 'COMMA', 'CIN', 'STDIN', 'COUT',
+          'VARIABLE', 'ENDL', 'CIN', 'STDIN', 'COUT',
           'STDOUT', 'STRINGLITERAL', 'COMMENT', 'AND', 'OR', 'GREATER', 'LESS', 'EQUAL',
           'IF', 'ELSE', 'RETURN', 'DATATYPE', 'NUMBER')
 
@@ -21,7 +21,6 @@ t_LCURLY = r'{'
 t_RCURLY = r'}'
 t_VARIABLE = r'_[A-Za-z]([A-Za-z0-9_]+)?'
 t_ENDL = r';'
-t_COMMA = r','
 t_CIN = r'cin'
 t_STDIN = r'>>'
 t_COUT = r'cout'
@@ -259,13 +258,6 @@ def p_variable_name(p):
     variable_name : VARIABLE
     '''
     p[0] = ('variable', p[1])
-
-
-def p_comma(p):
-    '''
-    comma : COMMA
-    '''
-    p[0] = ('comma', p[1])
 
 
 def p_endl(p):
