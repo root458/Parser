@@ -1,0 +1,27 @@
+
+
+cout << "\nSALARY CALCULATOR";
+
+cout << "\n\nEnter basic salary\n>>> ";
+cin >> _basic_salary;
+
+cout << "\nEnter sales made\n>>> ";
+cin >> _sales_made;
+
+_commission = 0.2 * _sales_made;
+
+_total = _basic_salary + _commission;
+
+cout << "\nTotal: ";
+cout  << _total;
+cout << "\n\n";
+
+// Compare & Classify
+if (_x > 0 && _total > 40000) {
+    // cout << "Seller's salary is high\n";
+}
+else {
+    cout << "Seller's salary is low\n";
+}
+
+return 0;
