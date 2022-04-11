@@ -316,8 +316,14 @@ parser = yacc()
 with open('code.txt', 'r') as file:
     code = file.read()
 
-# code = code.replace('#include <iostream>', '').replace('using namespace std;', '')
-
 # Parse an expression
 ast = parser.parse(code)
-print(ast)
+
+if ast == None:
+    print('\n')
+    print('Error parsing code')
+    print('\n')
+else:
+    print('\n\n\n')
+    print(ast)
+    print('\n\n\n')
