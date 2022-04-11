@@ -321,7 +321,7 @@ ast = parser.parse(code)
 
 if ast == None:
     print('\n')
-    print('Error parsing code')
+    print('Error scanning code')
     print('\n')
 else:
     print('\n\n\n')
