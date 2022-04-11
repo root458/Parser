@@ -2,7 +2,7 @@ from lex import lex
 from yacc import yacc
 
 # Tokens
-tokens = ('PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
+tokens = ('INCLUDE', 'IOSTREAM', 'USING', 'NAMESPACE', 'STD', 'INT', 'MAIN', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
           'VARIABLE', 'ENDL', 'CIN', 'STDIN', 'COUT',
           'STDOUT', 'STRINGLITERAL', 'COMMENT', 'AND', 'OR', 'GREATER', 'LESS', 'EQUAL',
           'IF', 'ELSE', 'RETURN', 'DATATYPE', 'NUMBER')
@@ -11,6 +11,13 @@ tokens = ('PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCU
 t_ignore = ' \t'
 
 # Token matching rules are written as regexs
+t_INCLUDE = r'\#include'
+t_IOSTREAM = r'<iostream>'
+t_USING = r'using'
+t_NAMESPACE = r'namespace'
+t_STD = r'std'
+t_INT = r'int'
+t_MAIN = r'main'
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
@@ -38,7 +45,7 @@ t_RETURN = r'return'
 
 
 def t_DATATYPE(t):
-    r'^(string|float)'
+    r'(string|float)'
     t.value = t.value
     return t
 
@@ -54,7 +61,7 @@ def t_ignore_newline(t):
 
 
 def t_error(t):
-    print(f'Unexpected character {t.value[0]!r}')
+    print(f'Unexpected character {t.value[0]!r} at line no {t.lineno}')
     t.lexer.skip(1)
 
 
@@ -66,6 +73,34 @@ lexer = lex()
 
 # <compound stmt> --> { <stmt list> }
 # <stmt list> --> <stmt> <stmt list> | epsilon
+
+
+def p_program(p):
+    '''
+    program : include namespace main_def LCURLY body RCURLY
+    '''
+    p[0] = ('program', p[1], p[2], p[5])
+
+
+def p_include(p):
+    '''
+    include : INCLUDE IOSTREAM
+    '''
+    p[0] = ('include', p[2])
+
+
+def p_namespace(p):
+    '''
+    namespace : USING NAMESPACE STD endl
+    '''
+    p[0] = ('namespace', p[3])
+
+
+def p_main_def(p):
+    '''
+    main_def : INT MAIN LPAREN RPAREN
+    '''
+    p[0] = ('main', p[1] + ' ' + p[2] + p[3]+p[4])
 
 
 def p_body(p):
@@ -281,7 +316,7 @@ parser = yacc()
 with open('code.txt', 'r') as file:
     code = file.read()
 
-print(code)
+# code = code.replace('#include <iostream>', '').replace('using namespace std;', '')
 
 # Parse an expression
 ast = parser.parse(code)
