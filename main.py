@@ -1,11 +1,19 @@
+from ast import keyword
 from lex import lex
 from yacc import yacc
 
+# Global variables
+has_error = False
+
+# Keywords
+types = ('float', 'string', 'int', 'void')
+keywords = ('using', 'namespace', 'std', 'main',
+            'return', 'cout', 'cin', 'if', 'else')
+
 # Tokens
-tokens = ('INCLUDE', 'IOSTREAM', 'USING', 'NAMESPACE', 'STD', 'INT', 'MAIN', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
-          'VARIABLE', 'ENDL', 'CIN', 'STDIN', 'COUT',
-          'STDOUT', 'STRINGLITERAL', 'COMMENT', 'AND', 'OR', 'GREATER', 'LESS', 'EQUAL',
-          'IF', 'ELSE', 'RETURN', 'DATATYPE', 'NUMBER')
+tokens = ('INCLUDE', 'IOSTREAM', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
+          'IDENTIFIER', 'ENDL', 'STDIN', 'STDOUT', 'STRINGLITERAL', 'COMMENT', 'AND', 'OR', 'GREATER', 'LESS', 'EQUAL',
+          'NUMBER')
 
 # Ignored characters
 t_ignore = ' \t'
@@ -13,11 +21,6 @@ t_ignore = ' \t'
 # Token matching rules are written as regexs
 t_INCLUDE = r'\#include'
 t_IOSTREAM = r'<iostream>'
-t_USING = r'using'
-t_NAMESPACE = r'namespace'
-t_STD = r'std'
-t_INT = r'int'
-t_MAIN = r'main'
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
@@ -26,11 +29,8 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LCURLY = r'{'
 t_RCURLY = r'}'
-t_VARIABLE = r'_[A-Za-z]([A-Za-z0-9_]+)?'
 t_ENDL = r';'
-t_CIN = r'cin'
 t_STDIN = r'>>'
-t_COUT = r'cout'
 t_STDOUT = r'<<'
 t_STRINGLITERAL = r'"+([^"]*)+"'
 t_COMMENT = r'//+(.*)'
@@ -39,13 +39,10 @@ t_OR = r'\|\|'
 t_GREATER = r'>'
 t_LESS = r'<'
 t_EQUAL = r'='
-t_IF = r'if'
-t_ELSE = r'else'
-t_RETURN = r'return'
 
 
-def t_DATATYPE(t):
-    r'(string|float)'
+def t_IDENTIFIER(t):
+    r'[A-Za-z]([A-Za-z0-9_]+)?'
     t.value = t.value
     return t
 
@@ -91,16 +88,18 @@ def p_include(p):
 
 def p_namespace(p):
     '''
-    namespace : USING NAMESPACE STD endl
+    namespace : IDENTIFIER IDENTIFIER IDENTIFIER endl
     '''
-    p[0] = ('namespace', p[3])
+    if (p[1] == 'using' and p[2] == 'namespace') and p[3] == 'std':
+        p[0] = ('namespace', p[3])
 
 
 def p_main_def(p):
     '''
-    main_def : INT MAIN LPAREN RPAREN
+    main_def : IDENTIFIER IDENTIFIER LPAREN RPAREN
     '''
-    p[0] = ('main', p[1] + ' ' + p[2] + p[3]+p[4])
+    if (p[1] == 'int' and p[2] == 'main'):
+        p[0] = ('main', p[1] + ' ' + p[2] + p[3]+p[4])
 
 
 def p_body(p):
@@ -119,7 +118,7 @@ def p_stmt_list(p):
 
 def p_stmt_list_end(p):
     '''
-    stmt_list : RETURN NUMBER endl
+    stmt_list : IDENTIFIER NUMBER endl
     '''
     p[0] = ('end ', p[1] + ' ' + p[2])
 
@@ -138,9 +137,10 @@ def p_statement(p):
 
 def p_conditional(p):
     '''
-    conditional : IF LPAREN logical RPAREN LCURLY oneline RCURLY ELSE LCURLY oneline RCURLY
+    conditional : IDENTIFIER LPAREN logical RPAREN LCURLY oneline RCURLY IDENTIFIER LCURLY oneline RCURLY
     '''
-    p[0] = ('conditional', p[1], p[3], p[6], p[8], p[10])
+    if (p[1] == 'if' and p[8] == 'else'):
+        p[0] = ('conditional', p[1], p[3], p[6], p[8], p[10])
 
 
 def p_oneline(p):
@@ -189,8 +189,6 @@ def p_expression(p):
     expression : term PLUS term
                | term MINUS term
     '''
-    #            | term GREATER term
-    #           | term LESS term
     p[0] = ('expression', p[2], p[1], p[3])
 
 
@@ -225,7 +223,7 @@ def p_factor_number(p):
 
 def p_factor_name(p):
     '''
-    factor : VARIABLE
+    factor : IDENTIFIER
     '''
     p[0] = ('variable', p[1])
 
@@ -254,10 +252,11 @@ def p_comment(p):
 
 def p_output(p):
     '''
-    output : COUT STDOUT string_literal endl
-           | COUT STDOUT variable_name endl
+    output : IDENTIFIER STDOUT string_literal endl
+           | IDENTIFIER STDOUT variable_name endl
     '''
-    p[0] = ('output', p[3])
+    if p[1] == 'cout':
+        p[0] = ('output', p[3])
 
 
 def p_string_literal(p):
@@ -269,9 +268,10 @@ def p_string_literal(p):
 
 def p_input(p):
     '''
-    input : CIN STDIN variable_name endl
+    input : IDENTIFIER STDIN variable_name endl
     '''
-    p[0] = ('input', p[3])
+    if (p[1] == 'cin'):
+        p[0] = ('input', p[3])
 
 
 def p_declaration(p):
@@ -283,15 +283,17 @@ def p_declaration(p):
 
 def p_data_type(p):
     '''
-    data_type : DATATYPE
+    data_type : IDENTIFIER
     '''
-    p[0] = ('data_type', p[1])
+    if (p[1] in types):
+        p[0] = ('data_type', p[1])
 
 
 def p_variable_name(p):
     '''
-    variable_name : VARIABLE
+    variable_name : IDENTIFIER
     '''
+    # if (p[1] not in keyword):
     p[0] = ('variable', p[1])
 
 
