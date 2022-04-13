@@ -4,7 +4,7 @@ from yacc import yacc
 
 # Global variables
 has_error = False
-
+error_logs = ''
 # Keywords
 types = ('float', 'string', 'int', 'void')
 keywords = ('using', 'namespace', 'std', 'main',
@@ -92,6 +92,21 @@ def p_namespace(p):
     '''
     if (p[1] == 'using' and p[2] == 'namespace') and p[3] == 'std':
         p[0] = ('namespace', p[3])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        if p[1] != 'using':
+            error_logs += "Expected 'using' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[1])
+
+        if p[2] != 'namespace':
+            error_logs += "Expected 'namespace' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[2])
+
+        if p[3] != 'std':
+            error_logs += "Expected 'std' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[3])
 
 
 def p_main_def(p):
@@ -327,5 +342,8 @@ if ast == None:
     print('\n')
 else:
     print('\n\n\n')
-    print(ast)
+    if has_error:
+        print(error_logs)
+    else:
+        print(ast)
     print('\n\n\n')
