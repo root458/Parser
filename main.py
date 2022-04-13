@@ -115,6 +115,17 @@ def p_main_def(p):
     '''
     if (p[1] == 'int' and p[2] == 'main'):
         p[0] = ('main', p[1] + ' ' + p[2] + p[3]+p[4])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        if p[1] != 'int':
+            error_logs += "Expected 'int' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[1])
+
+        if p[2] != 'main':
+            error_logs += "Expected 'main' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[2])
 
 
 def p_body(p):
@@ -156,6 +167,17 @@ def p_conditional(p):
     '''
     if (p[1] == 'if' and p[8] == 'else'):
         p[0] = ('conditional', p[1], p[3], p[6], p[8], p[10])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        if p[1] != 'if':
+            error_logs += "Expected 'if' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[1])
+
+        if p[2] != 'else':
+            error_logs += "Expected 'else' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[2])
 
 
 def p_oneline(p):
@@ -272,6 +294,13 @@ def p_output(p):
     '''
     if p[1] == 'cout':
         p[0] = ('output', p[3])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        if p[1] != 'cout':
+            error_logs += "Expected 'cout' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[1])
 
 
 def p_string_literal(p):
@@ -287,6 +316,13 @@ def p_input(p):
     '''
     if (p[1] == 'cin'):
         p[0] = ('input', p[3])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        if p[1] != 'cin':
+            error_logs += "Expected 'cin' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[1])
 
 
 def p_declaration(p):
@@ -302,6 +338,12 @@ def p_data_type(p):
     '''
     if (p[1] in types):
         p[0] = ('data_type', p[1])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        error_logs += "'{1}' on line {0} is not a valid data type\n\n".format(
+            p.lineno(1), p[1])
 
 
 def p_variable_name(p):
