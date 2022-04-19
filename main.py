@@ -4,6 +4,7 @@ from yacc import yacc
 
 # Global variables
 has_error = False
+scanner_error_logs = ''
 error_logs = ''
 # Keywords
 types = ('float', 'string', 'int', 'void')
@@ -362,7 +363,8 @@ def p_endl(p):
 
 
 def p_error(p):
-    print(f'Syntax error at {p.value!r}, line number {p.lineno!r}')
+    global scanner_error_logs
+    scanner_error_logs += f'{p.value!r} on line number {p.lineno!r} is unexpected\n'
 
 ################
 # PARSER
@@ -381,6 +383,8 @@ ast = parser.parse(code)
 if ast == None:
     print('\n')
     print('Error scanning code')
+    print('\n')
+    print(scanner_error_logs)
     print('\n')
 else:
     print('\n\n\n')
