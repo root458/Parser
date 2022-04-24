@@ -14,7 +14,7 @@ keywords = ('using', 'namespace', 'std', 'main',
 # Tokens
 tokens = ('INCLUDE', 'IOSTREAM', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
           'IDENTIFIER', 'ENDL', 'STDIN', 'STDOUT', 'STRINGLITERAL', 'COMMENT', 'AND', 'OR', 'GREATER', 'LESS', 'EQUAL',
-          'NUMBER')
+          'GREATEREQUAL', 'LESSEQUAL', 'NOTEQUAL', 'EQUALITY', 'NUMBER')
 
 # Ignored characters
 t_ignore = ' \t'
@@ -38,7 +38,11 @@ t_COMMENT = r'//+(.*)'
 t_AND = r'&&'
 t_OR = r'\|\|'
 t_GREATER = r'>'
+t_GREATEREQUAL = r'>='
 t_LESS = r'<'
+t_LESSEQUAL = r'<='
+t_NOTEQUAL = r'!='
+t_EQUALITY = r'=='
 t_EQUAL = r'='
 
 
@@ -210,7 +214,11 @@ def p_logical_boolean(p):
 def p_boolean(p):
     '''
     boolean : expression GREATER expression
+            | expression GREATEREQUAL expression
             | expression LESS expression
+            | expression LESSEQUAL expression
+            | expression NOTEQUAL expression
+            | expression EQUALITY expression
     '''
     p[0] = ('boolean', p[2], p[1], p[3])
 
