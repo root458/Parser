@@ -14,7 +14,7 @@ keywords = ('using', 'namespace', 'std', 'main',
 # Tokens
 tokens = ('INCLUDE', 'IOSTREAM', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
           'IDENTIFIER', 'ENDL', 'STDIN', 'STDOUT', 'STRINGLITERAL', 'COMMENT', 'AND', 'OR', 'GREATER', 'LESS', 'EQUAL',
-          'GREATEREQUAL', 'LESSEQUAL', 'NOTEQUAL', 'EQUALITY', 'NUMBER')
+          'GREATEREQUAL', 'LESSEQUAL', 'NOTEQUAL', 'EQUALITY', 'INC', 'DEC', 'NUMBER')
 
 # Ignored characters
 t_ignore = ' \t'
@@ -43,6 +43,8 @@ t_LESS = r'<'
 t_LESSEQUAL = r'<='
 t_NOTEQUAL = r'!='
 t_EQUALITY = r'=='
+t_INC = r'\+\+'
+t_DEC = r'\-\-'
 t_EQUAL = r'='
 
 
