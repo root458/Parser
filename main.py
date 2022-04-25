@@ -9,7 +9,8 @@ error_logs = ''
 # Keywords
 types = ('float', 'string', 'int', 'void')
 keywords = ('using', 'namespace', 'std', 'main',
-            'return', 'cout', 'cin', 'if', 'else')
+            'return', 'cout', 'cin', 'if', 'else', 
+            'float', 'string', 'int', 'void')
 
 # Tokens
 tokens = ('INCLUDE', 'IOSTREAM', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
@@ -164,6 +165,8 @@ def p_statement(p):
               | output
               | input
               | conditional
+              | decrement_stmt
+              | increment_stmt
     '''
     p[0] = ('statement', p[1])
 
@@ -194,6 +197,8 @@ def p_oneline(p):
             | assignment
             | output
             | input
+            | increment_stmt
+            | decrement_stmt
     '''
     p[0] = ('statement', p[1])
 
@@ -230,6 +235,53 @@ def p_assignment(p):
     assignment : variable_name EQUAL expression endl
     '''
     p[0] = ('assignment', p[1], p[3])
+
+def p_assignment_inc_dec(p):
+    '''
+    assignment : variable_name EQUAL increment_stmt
+               | variable_name EQUAL decrement_stmt
+    '''
+    p[0] = ('assignment', p[1], p[3])
+
+def p_increment_stmt(p):
+    '''
+    increment_stmt : increment endl
+    '''
+    p[0] = ('increment_stmt', p[1])
+
+def p_decrement_stmt(p):
+    '''
+    decrement_stmt : decrement endl
+    '''
+    p[0] = ('decrement_stmt', p[1])
+
+def p_increment(p):
+    '''
+    increment : IDENTIFIER INC
+    '''
+    global has_error
+    global keywords
+    global error_logs
+    if p[1] in keywords:
+        has_error = True
+        error_logs += "Wrong use of operator on line {0}\n\n".format(
+            p.lineno(1))
+    else:
+        p[0] = ('increment', p[1])
+
+def p_decrement(p):
+    '''
+    decrement : IDENTIFIER DEC
+    '''
+    global has_error
+    global keywords
+    global error_logs
+    if p[1] in keywords:
+        has_error = True
+        error_logs += "Wrong use of operator on line {0}\n\n".format(
+            p.lineno(1))
+    else:
+        p[0] = ('decrement', p[1])
 
 
 def p_expression(p):
