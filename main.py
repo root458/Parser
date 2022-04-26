@@ -9,7 +9,7 @@ error_logs = ''
 # Keywords
 types = ('float', 'string', 'int', 'void')
 keywords = ('using', 'namespace', 'std', 'main',
-            'return', 'cout', 'cin', 'if', 'else', 
+            'return', 'cout', 'cin', 'if', 'else',
             'float', 'string', 'int', 'void')
 
 # Tokens
@@ -236,6 +236,7 @@ def p_assignment(p):
     '''
     p[0] = ('assignment', p[1], p[3])
 
+
 def p_assignment_inc_dec(p):
     '''
     assignment : variable_name EQUAL increment_stmt
@@ -243,17 +244,20 @@ def p_assignment_inc_dec(p):
     '''
     p[0] = ('assignment', p[1], p[3])
 
+
 def p_increment_stmt(p):
     '''
     increment_stmt : increment endl
     '''
     p[0] = ('increment_stmt', p[1])
 
+
 def p_decrement_stmt(p):
     '''
     decrement_stmt : decrement endl
     '''
     p[0] = ('decrement_stmt', p[1])
+
 
 def p_increment(p):
     '''
@@ -268,6 +272,7 @@ def p_increment(p):
             p.lineno(1))
     else:
         p[0] = ('increment', p[1])
+
 
 def p_decrement(p):
     '''
