@@ -154,7 +154,7 @@ def p_stmt_list_end(p):
     '''
     stmt_list : IDENTIFIER NUMBER endl
     '''
-    p[0] = ('end ', p[1] + ' ' + p[2])
+    p[0] = ('end', p[1] + ' ' + p[2])
 
 
 def p_statement(p):
@@ -164,19 +164,20 @@ def p_statement(p):
               | assignment
               | output
               | input
-              | conditional
+              | if_clause
+              | else_clause
               | decrement_stmt
               | increment_stmt
     '''
     p[0] = ('statement', p[1])
 
 
-def p_conditional(p):
+def p_if_clause(p):
     '''
-    conditional : IDENTIFIER LPAREN logical RPAREN LCURLY oneline RCURLY IDENTIFIER LCURLY oneline RCURLY
+    if_clause : IDENTIFIER LPAREN logical RPAREN LCURLY oneline RCURLY
     '''
-    if (p[1] == 'if' and p[8] == 'else'):
-        p[0] = ('conditional', p[1], p[3], p[6], p[8], p[10])
+    if (p[1] == 'if'):
+        p[0] = ('if clause', p[1], p[3], p[6])
     else:
         global has_error
         global error_logs
@@ -185,9 +186,20 @@ def p_conditional(p):
             error_logs += "Expected 'if' instead of '{1}' on line {0}\n\n".format(
                 p.lineno(1), p[1])
 
-        if p[2] != 'else':
+
+def p_else_clause(p):
+    '''
+    else_clause : IDENTIFIER LCURLY oneline RCURLY
+    '''
+    if (p[1] == 'else'):
+        p[0] = ('else clause', p[3])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        if p[1] != 'else':
             error_logs += "Expected 'else' instead of '{1}' on line {0}\n\n".format(
-                p.lineno(1), p[2])
+                p.lineno(1), p[1])
 
 
 def p_oneline(p):
