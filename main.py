@@ -174,7 +174,7 @@ def p_statement(p):
 
 def p_if_clause(p):
     '''
-    if_clause : IDENTIFIER LPAREN logical RPAREN LCURLY oneline RCURLY
+    if_clause : IDENTIFIER LPAREN logical RPAREN LCURLY block_stmts
     '''
     if (p[1] == 'if'):
         p[0] = ('if clause', p[1], p[3], p[6])
@@ -189,7 +189,7 @@ def p_if_clause(p):
 
 def p_else_clause(p):
     '''
-    else_clause : IDENTIFIER LCURLY oneline RCURLY
+    else_clause : IDENTIFIER LCURLY block_stmts
     '''
     if (p[1] == 'else'):
         p[0] = ('else clause', p[3])
@@ -200,6 +200,20 @@ def p_else_clause(p):
         if p[1] != 'else':
             error_logs += "Expected 'else' instead of '{1}' on line {0}\n\n".format(
                 p.lineno(1), p[1])
+
+
+def p_block_stmts(p):
+    '''
+    block_stmts : oneline block_stmts
+    '''
+    p[0] = ('block', p[1], p[2])
+
+
+def p_block_stmts_end(p):
+    '''
+    block_stmts : RCURLY
+    '''
+    p[0] = ('end', '}')
 
 
 def p_oneline(p):
