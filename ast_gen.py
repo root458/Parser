@@ -4,5 +4,6 @@ def get_ast_from_file():
         ast = file.read()
     return ast
 
+
 if __name__ == "__main__":
     print(get_ast_from_file())
