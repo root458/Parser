@@ -166,10 +166,34 @@ def p_statement(p):
               | input
               | else_clause
               | if_while
+              | for_loop
               | decrement_stmt
               | increment_stmt
     '''
     p[0] = ('statement', p[1])
+
+
+def p_for_loop(p):
+    '''
+    for_loop : IDENTIFIER LPAREN assignment boolean endl inc_dec RPAREN LCURLY block_stmts
+    '''
+    if (p[1] == 'for'):
+        p[0] = ('for loop', p[3], p[4], p[6], p[9])
+    else:
+        global has_error
+        global error_logs
+        has_error = True
+        if p[1] != 'for':
+            error_logs += "Expected 'for' instead of '{1}' on line {0}\n\n".format(
+                p.lineno(1), p[1])
+
+
+def p_inc_dec(p):
+    '''
+    inc_dec : increment
+            | decrement
+    '''
+    p[0] = p[1]
 
 
 def p_if_while(p):
@@ -225,6 +249,8 @@ def p_oneline(p):
             | output
             | input
             | if_while
+            | else_clause
+            | for_loop
             | increment_stmt
             | decrement_stmt
     '''

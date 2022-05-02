@@ -25,6 +25,12 @@ int main() {
     cout  << total;
     cout << "\n\n";
 
+    for (n = 1; n > 10; n--) {
+        if (x > 0) {
+            cout << "Seller's salary is high\n";
+        }
+    }
+
     while (total > 40000) {
         if (x > 0) {
             cout << "Seller's salary is high\n";
