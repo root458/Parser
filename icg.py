@@ -8,6 +8,29 @@ def get_ast_from_file():
         ast = file.read()
     return ast
 
+#################################
+#
+# QUADRUPLES STATEMENT GENERATORS
+#
+#################################
+
+
+def gen_declaration(tup):
+    return '(DECLARE, {}, {})'.format(tup[1][1], tup[2][1])
+
+
+def gen_output(tup):
+    if tup[1][0] == 'variable':
+        return '(PRINT, VARIABLE, {})'.format(tup[1][1])
+    if tup[1][0] == 'string literal':
+        return '(PRINT, LITERAL, {})'.format(tup[1][1])
+
+
+def gen_input(tup):
+    return '(GET, {})'.format(tup[1][1])
+
+########################################################
+
 
 def generate_code(body):
     global code
@@ -23,7 +46,16 @@ def generate_code(body):
             # Get code
             break
         else:
-            code += '\n{}'.format(body[1][1])
+
+            if body[1][1][0] == 'declaration':
+                code += '\n{}'.format(gen_declaration(body[1][1]))
+
+            if body[1][1][0] == 'output':
+                code += '\n{}'.format(gen_output(body[1][1]))
+
+            if body[1][1][0] == 'input':
+                code += '\n{}'.format(gen_input(body[1][1]))
+
             body = body[2]
 
 
