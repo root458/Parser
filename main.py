@@ -512,5 +512,7 @@ else:
     if has_error:
         print(error_logs)
     else:
+        with open('ast.txt', 'w') as file:
+            file.write(str(ast))
         print(ast)
     print('\n\n\n')
