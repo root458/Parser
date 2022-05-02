@@ -25,6 +25,14 @@ int main() {
     cout  << total;
     cout << "\n\n";
 
+    while (total > 40000) {
+        if (x > 0) {
+            cout << "Seller's salary is high\n";
+        }
+
+        x++;
+    }
+
     // Compare & Classify
     if (x > 0 && total > 40000) {
         cout << "Seller's salary is high\n";

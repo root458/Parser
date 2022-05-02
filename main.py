@@ -164,27 +164,28 @@ def p_statement(p):
               | assignment
               | output
               | input
-              | if_clause
               | else_clause
+              | if_while
               | decrement_stmt
               | increment_stmt
     '''
     p[0] = ('statement', p[1])
 
 
-def p_if_clause(p):
+def p_if_while(p):
     '''
-    if_clause : IDENTIFIER LPAREN logical RPAREN LCURLY block_stmts
+    if_while : IDENTIFIER LPAREN logical RPAREN LCURLY block_stmts
     '''
+    if (p[1] == 'while'):
+        p[0] = ('while loop', p[3], p[6])
     if (p[1] == 'if'):
-        p[0] = ('if clause', p[1], p[3], p[6])
-    else:
+        p[0] = ('if clause', p[3], p[6])
+    if (p[1] not in ['while', 'if']):
         global has_error
         global error_logs
         has_error = True
-        if p[1] != 'if':
-            error_logs += "Expected 'if' instead of '{1}' on line {0}\n\n".format(
-                p.lineno(1), p[1])
+        error_logs += "Expected 'while/if' instead of '{1}' on line {0}\n\n".format(
+            p.lineno(1), p[1])
 
 
 def p_else_clause(p):
@@ -223,6 +224,7 @@ def p_oneline(p):
             | assignment
             | output
             | input
+            | if_while
             | increment_stmt
             | decrement_stmt
     '''
