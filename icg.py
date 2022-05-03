@@ -224,11 +224,26 @@ def gen_if_clause(tup):
         snippet += '\n*'
         snippet += '\n(LABEL L{})'.format((label-1))
 
+    snippet = snippet.replace('\n*', gen_else_clause(tup[2]))
+
     return snippet
 
 
 def gen_else_clause(tup):
     snippet = ''
+
+    # 0 -> block
+    # 1 -> statement tuple
+    # 2 -> block tuple
+
+    while (True):
+        if tup[0] == 'end':
+            break
+        else:
+            if tup[1][1][0] == 'output':
+                snippet += '\n{}'.format(gen_output(tup[1][1]))
+
+            tup = tup[2]
 
     return snippet
 
@@ -250,7 +265,6 @@ def generate_code(body):
             # Get code
             break
         else:
-            print(body[1][1])
 
             # Skip comment statement
 
@@ -267,18 +281,15 @@ def generate_code(body):
                 code += '\n{}'.format(gen_assignment(body[1][1]))
 
             if body[1][1][0] == 'if clause':
-                print(body[1][1])
                 code += '\n{}'.format(gen_if_clause(body[1][1]))
 
             if body[1][1][0] == 'else clause':
-                code += '\n{}'.format(gen_else_clause(body[1][1]))
+                code += '{}'.format(gen_else_clause(body[1][1][1]))
 
             body = body[2]
 
 
 if __name__ == "__main__":
     body = make_tuple(get_ast_from_file())[3][1]
-    # print(body)
     generate_code(body)
-    # print(len(body))
     print(code)
