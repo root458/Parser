@@ -1,6 +1,7 @@
 from ast import literal_eval as make_tuple
 
 code = ''
+temp = 0
 
 
 def get_ast_from_file():
@@ -29,6 +30,87 @@ def gen_output(tup):
 def gen_input(tup):
     return '(GET, {})'.format(tup[1][1])
 
+
+def gen_assignment(tup):
+    snippet = ''
+    global temp
+    if tup[2][0] == 'term':
+        if tup[2][1] == '*':
+            snippet += '(MUL, T{}, {}, {})'.format(temp,
+                                                   tup[2][2][1], tup[2][3][1])
+            temp += 1
+        if tup[2][1] == '/':
+            snippet += '(DIV, T{}, {}, {})'.format(temp,
+                                                   tup[2][2][1], tup[2][3][1])
+            temp += 1
+        snippet += '\n(ASSIGN, {}, T{})'.format(tup[1][1], (temp-1))
+
+    if tup[2][0] == 'expression':
+
+        # Variable and variable
+        if tup[2][2][0] != 'term' and tup[2][3][0] != 'term':
+            if tup[2][1] == '+':
+                snippet += '(ADD, {}, {}, {})'.format(
+                    tup[1][1], tup[2][2][1], tup[2][3][1])
+            else:
+                snippet += '(SUB, {}, {}, {})'.format(
+                    tup[1][1], tup[2][2][1], tup[2][3][1])
+
+        # Term variable/number |
+        if tup[2][2][0] == 'term':
+            if tup[2][2][1] == '*':
+                snippet += '(MUL, T{}, {}, {})'.format(temp,
+                                                       tup[2][2][2][1], tup[2][2][3][1])
+                temp += 1
+            if tup[2][2][1] == '/':
+                snippet += '(DIV, T{}, {}, {})'.format(temp,
+                                                       tup[2][2][2][1], tup[2][2][3][1])
+                temp += 1
+
+            if tup[2][3][0] == 'term':
+                if tup[2][3][1] == '*':
+                    snippet += '\n(MUL, T{}, {}, {})'.format(temp,
+                                                             tup[2][3][2][1], tup[2][3][3][1])
+                    temp += 1
+                if tup[2][3][1] == '/':
+                    snippet += '\n(DIV, T{}, {}, {})'.format(temp,
+                                                             tup[2][3][2][1], tup[2][3][3][1])
+                    temp += 1
+
+                if tup[2][1] == '+':
+                    snippet += '\n(ADD, {}, T{}, T{})'.format(
+                        tup[1][1], (temp-2), (temp-1))
+                else:
+                    snippet += '\n(SUB, {}, T{}, T{})'.format(
+                        tup[1][1], (temp-2), (temp-1))
+            else:
+                if tup[2][1] == '+':
+                    snippet += '\n(ADD, {}, T{}, {})'.format(
+                        tup[1][1], (temp-1), tup[2][3][1])
+                else:
+                    snippet += '\n(SUB, {}, T{}, {})'.format(
+                        tup[1][1], (temp-1), tup[2][3][1])
+
+        else:
+            if tup[2][3][0] == 'term':
+                if tup[2][3][1] == '*':
+                    snippet += '(MUL, T{}, {}, {})'.format(temp,
+                                                           tup[2][3][2][1], tup[2][3][3][1])
+                    temp += 1
+                if tup[2][3][1] == '/':
+                    snippet += '(DIV, T{}, {}, {})'.format(temp,
+                                                           tup[2][3][2][1], tup[2][3][3][1])
+                    temp += 1
+
+                if tup[2][1] == '+':
+                    snippet += '\n(ADD, {}, {}, T{})'.format(
+                        tup[1][1], tup[2][2][1], (temp-1))
+                else:
+                    snippet += '\n(SUB, {}, {}, T{})'.format(
+                        tup[1][1], tup[2][2][1], (temp-1))
+
+    return snippet
+
 ########################################################
 
 
@@ -46,7 +128,7 @@ def generate_code(body):
             # Get code
             break
         else:
-
+            print(body[1][1])
             if body[1][1][0] == 'declaration':
                 code += '\n{}'.format(gen_declaration(body[1][1]))
 
@@ -55,6 +137,9 @@ def generate_code(body):
 
             if body[1][1][0] == 'input':
                 code += '\n{}'.format(gen_input(body[1][1]))
+
+            if body[1][1][0] == 'assignment':
+                code += '\n{}'.format(gen_assignment(body[1][1]))
 
             body = body[2]
 
