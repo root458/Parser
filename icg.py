@@ -520,7 +520,10 @@ def gen_else_clause(tup):
             if tup[1][1][0] == 'for loop':
                 snippet += '\n{}'.format(gen_for_loop(tup[1][1][1]))
 
-            tup = tup[2]
+            try:
+                tup = tup[2]
+            except:
+                tup = tup[1]
 
     return snippet
 
