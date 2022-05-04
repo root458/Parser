@@ -243,6 +243,21 @@ def gen_else_clause(tup):
             if tup[1][1][0] == 'output':
                 snippet += '\n{}'.format(gen_output(tup[1][1]))
 
+            if tup[1][1][0] == 'input':
+                snippet += '\n{}'.format(gen_input(tup[1][1]))
+
+            if tup[1][1][0] == 'declaration':
+                snippet += '\n{}'.format(gen_declaration(tup[1][1]))
+
+            if tup[1][1][0] == 'assignment':
+                snippet += '\n{}'.format(gen_assignment(tup[1][1]))
+
+            if tup[1][1][0] == 'if clause':
+                snippet += '\n{}'.format(gen_if_clause(tup[1][1]))
+
+            if tup[1][1][0] == 'else clause':
+                snippet += '\n{}'.format(gen_else_clause(tup[1][1]))
+
             tup = tup[2]
 
     return snippet
@@ -265,7 +280,7 @@ def generate_code(body):
             # Get code
             break
         else:
-
+            print(body[1][1])
             # Skip comment statement
 
             if body[1][1][0] == 'declaration':
