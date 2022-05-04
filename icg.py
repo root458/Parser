@@ -32,6 +32,14 @@ def gen_input(tup):
     return '(GET, {})'.format(tup[1][1])
 
 
+def gen_increment_stmt(tup):
+    return '(ADD, {}, {}, 1)'.format(tup[1], tup[1])
+
+
+def gen_decrement_stmt(tup):
+    return '(MINUS, {}, {}, 1)'.format(tup[1], tup[1])
+
+
 def gen_assignment(tup):
     snippet = ''
     global temp
@@ -54,7 +62,7 @@ def gen_assignment(tup):
                 snippet += '(ADD, {}, {}, {})'.format(
                     tup[1][1], tup[2][2][1], tup[2][3][1])
             else:
-                snippet += '(SUB, {}, {}, {})'.format(
+                snippet += '(MINUS, {}, {}, {})'.format(
                     tup[1][1], tup[2][2][1], tup[2][3][1])
 
         # Term variable/number |
@@ -82,14 +90,14 @@ def gen_assignment(tup):
                     snippet += '\n(ADD, {}, T{}, T{})'.format(
                         tup[1][1], (temp-2), (temp-1))
                 else:
-                    snippet += '\n(SUB, {}, T{}, T{})'.format(
+                    snippet += '\n(MINUS, {}, T{}, T{})'.format(
                         tup[1][1], (temp-2), (temp-1))
             else:
                 if tup[2][1] == '+':
                     snippet += '\n(ADD, {}, T{}, {})'.format(
                         tup[1][1], (temp-1), tup[2][3][1])
                 else:
-                    snippet += '\n(SUB, {}, T{}, {})'.format(
+                    snippet += '\n(MINUS, {}, T{}, {})'.format(
                         tup[1][1], (temp-1), tup[2][3][1])
 
         else:
@@ -107,7 +115,7 @@ def gen_assignment(tup):
                     snippet += '\n(ADD, {}, {}, T{})'.format(
                         tup[1][1], tup[2][2][1], (temp-1))
                 else:
-                    snippet += '\n(SUB, {}, {}, T{})'.format(
+                    snippet += '\n(MINUS, {}, {}, T{})'.format(
                         tup[1][1], tup[2][2][1], (temp-1))
 
     return snippet
@@ -378,6 +386,12 @@ def gen_else_clause(tup):
             if tup[1][1][0] == 'while loop':
                 snippet += '\n{}'.format(gen_while_clause(tup[1][1]))
 
+            if tup[1][1][0] == 'increment_stmt':
+                snippet += '{}'.format(gen_increment_stmt(tup[1][1][1]))
+
+            if tup[1][1][0] == 'decrement_stmt':
+                snippet += '{}'.format(gen_decrement_stmt(tup[1][1][1]))
+
             tup = tup[2]
 
     return snippet
@@ -423,6 +437,12 @@ def generate_code(body):
 
             if body[1][1][0] == 'while loop':
                 code += '{}'.format(gen_while_clause(body[1][1]))
+
+            if body[1][1][0] == 'increment_stmt':
+                code += '{}'.format(gen_increment_stmt(body[1][1][1]))
+
+            if body[1][1][0] == 'decrement_stmt':
+                code += '{}'.format(gen_decrement_stmt(body[1][1][1]))
 
             body = body[2]
 
