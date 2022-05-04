@@ -582,7 +582,7 @@ def generate_code(body):
 
             else:
                 pass
-            
+
             body = body[2]
 
 
@@ -590,4 +590,4 @@ if __name__ == "__main__":
     body = make_tuple(get_ast_from_file())[3][1]
     generate_code(body)
     with open('generated_code.txt', 'w') as file:
-        file.write(code)
+        file.write(code.replace('\n\n', '\n').strip())
