@@ -493,32 +493,34 @@ def gen_else_clause(tup):
             if tup[1][1][0] == 'output':
                 snippet += '\n{}'.format(gen_output(tup[1][1]))
 
-            if tup[1][1][0] == 'input':
+            elif tup[1][1][0] == 'input':
                 snippet += '\n{}'.format(gen_input(tup[1][1]))
 
-            if tup[1][1][0] == 'declaration':
+            elif tup[1][1][0] == 'declaration':
                 snippet += '\n{}'.format(gen_declaration(tup[1][1]))
 
-            if tup[1][1][0] == 'assignment':
+            elif tup[1][1][0] == 'assignment':
                 snippet += '\n{}'.format(gen_assignment(tup[1][1]))
 
-            if tup[1][1][0] == 'if clause':
+            elif tup[1][1][0] == 'if clause':
                 snippet += '\n{}'.format(gen_if_clause(tup[1][1]))
 
-            if tup[1][1][0] == 'else clause':
+            elif tup[1][1][0] == 'else clause':
                 snippet += '\n{}'.format(gen_else_clause(tup[1][1]))
 
-            if tup[1][1][0] == 'while loop':
+            elif tup[1][1][0] == 'while loop':
                 snippet += '\n{}'.format(gen_while_clause(tup[1][1]))
 
-            if tup[1][1][0] == 'increment_stmt':
+            elif tup[1][1][0] == 'increment_stmt':
                 snippet += '\n{}'.format(gen_increment_stmt(tup[1][1][1]))
 
-            if tup[1][1][0] == 'decrement_stmt':
+            elif tup[1][1][0] == 'decrement_stmt':
                 snippet += '\n{}'.format(gen_decrement_stmt(tup[1][1][1]))
 
-            if tup[1][1][0] == 'for loop':
+            elif tup[1][1][0] == 'for loop':
                 snippet += '\n{}'.format(gen_for_loop(tup[1][1][1]))
+            else:
+                pass
 
             try:
                 tup = tup[2]
@@ -551,33 +553,36 @@ def generate_code(body):
             if body[1][1][0] == 'declaration':
                 code += '\n{}'.format(gen_declaration(body[1][1]))
 
-            if body[1][1][0] == 'output':
+            elif body[1][1][0] == 'output':
                 code += '\n{}'.format(gen_output(body[1][1]))
 
-            if body[1][1][0] == 'input':
+            elif body[1][1][0] == 'input':
                 code += '\n{}'.format(gen_input(body[1][1]))
 
-            if body[1][1][0] == 'assignment':
+            elif body[1][1][0] == 'assignment':
                 code += '\n{}'.format(gen_assignment(body[1][1]))
 
-            if body[1][1][0] == 'if clause':
+            elif body[1][1][0] == 'if clause':
                 code += '\n{}'.format(gen_if_clause(body[1][1]))
 
-            if body[1][1][0] == 'else clause':
+            elif body[1][1][0] == 'else clause':
                 code += '{}'.format(gen_else_clause(body[1][1][1]))
 
-            if body[1][1][0] == 'while loop':
+            elif body[1][1][0] == 'while loop':
                 code += '\n{}'.format(gen_while_clause(body[1][1]))
 
-            if body[1][1][0] == 'increment_stmt':
+            elif body[1][1][0] == 'increment_stmt':
                 code += '\n{}'.format(gen_increment_stmt(body[1][1][1]))
 
-            if body[1][1][0] == 'decrement_stmt':
+            elif body[1][1][0] == 'decrement_stmt':
                 code += '\n{}'.format(gen_decrement_stmt(body[1][1][1]))
 
-            if body[1][1][0] == 'for loop':
+            elif body[1][1][0] == 'for loop':
                 code += '\n{}'.format(gen_for_loop(body[1][1]))
 
+            else:
+                pass
+            
             body = body[2]
 
 
