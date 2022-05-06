@@ -1,2 +1,2 @@
 # Parser
-Python parser for C++ snippets
+Python parser for C++ snippets.
